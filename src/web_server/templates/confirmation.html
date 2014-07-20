@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+<body>
+Registration was successful !!!
+<br/>
+<br/>
+{% if user_name %}
+    <ul>
+        <li> Login = {{ user_name }}</li>
+    </ul>
+{% endif %}
+
+{% if password %}
+    <ul>
+         <li> Password = {{ password }} </li>
+    </ul>
+{% endif %}
+
+</body>
+</html>

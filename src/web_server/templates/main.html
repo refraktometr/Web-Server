@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+        Hello, user
+        <br/>
+        <br/>
+    <form action="/confirmation" method="post">
+        Login
+        <br/>
+        <input type="text" name="username" value="{{ username }}"/>
+          <br/>
+        Password
+        <br/>
+        <input type="text" name="password" value="{{ password }}"/>
+        <br/>
+        <input type="submit"/>
+        <br/><br/><br/>
+    </form>
+
+        <a href="/registration">Registration</a>
+
+</body>
+</html>
