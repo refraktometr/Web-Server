@@ -43,7 +43,3 @@ def confirmation():
 if __name__ == "__main__":
     app.debug = True
     app.run()
-
-
-asdadsasdasdasd
-фывфывфыв
