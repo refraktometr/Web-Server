@@ -1,9 +1,18 @@
-from web_server.db import  get_users, create_user, truncate_users, get_user_by_username, get_user_by_user_id
+import hashlib
+import random
+import string
 
-print(get_user_by_user_id(11))
-print (get_user_by_username('krinart'))
-user = get_user_by_user_id(11)
-print (user[1])
+
+salt = ''.join(random.choice(string.hexdigits) for i in range(25))
+
+print(salt)
+
+
+
+#from web_server.db import  get_users, create_user, truncate_users, get_user_by_username, get_user_by_user_id
+password = 'ekrjgnkelgrjekgn'
+password = hashlib.sha256(password hexdigest()+ salt).
+print password
 
 
 

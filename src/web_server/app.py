@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, render_template
-import random
+from web_server.auth import authorization_user
 from web_server.validation import validate_username, validate_password
-from web_server.db import create_user, get_user_by_user_id
+from web_server.db import create_user, get_user_by_user_id, get_user_by_username
 
 
 app = Flask(__name__)
@@ -10,7 +10,21 @@ app.config.from_object(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def show_username():
-    return render_template("main.html")
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        authorization = authorization_user(username, password)
+        if authorization == True:
+            return redirect('/page1')
+        else:
+            return render_template("main.html")
+    else:
+        return render_template("main.html")
+
+
+@app.route('/page1', methods=['GET', 'POST'])
+def info():
+    return render_template("page1.html")
 
 
 @app.route('/registration', methods=['GET', 'POST'])
