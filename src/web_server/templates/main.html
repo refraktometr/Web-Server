@@ -6,8 +6,11 @@
 <body>
         Hello, user
         <br/>
+        {% if error %}
+        Error
+        {% endif %} 
         <br/>
-    <form action="/confirmation" method="post">
+    <form action="/" method="post">
         Login
         <br/>
         <input type="text" name="username" value="{{ username }}"/>

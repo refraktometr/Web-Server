@@ -1,5 +1,9 @@
+import hashlib
 import random
 import psycopg2
+import string
+
+from web_server import utils
 
 conn_string = "host='localhost' dbname='test1' user='postgres' password='postgres'"
 
@@ -19,7 +23,9 @@ def get_users():
 
 def create_user(username, password):
     cursor = get_cursor()
-    salt = random.randint(0, 999999)
+
+    password, salt = utils.get_password_hash(password)
+
     query = "INSERT INTO users(username, password, salt) VALUES (%s, %s, %s) RETURNING id;"
     cursor.execute(query, (username, password, salt))
     return cursor.fetchone()[0]
