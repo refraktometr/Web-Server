@@ -20,7 +20,6 @@ def main():
         if auth.authorize_user(username, password) and password:
             response = redirect('/login_success')
             auth.set_session_key(response)
-            print response.headers
             return response
         else:
             error = True
