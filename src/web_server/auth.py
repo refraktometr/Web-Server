@@ -9,3 +9,8 @@ def authorize_user(username, password):
 
     _, _, user_password, salt = user_information
     return user_password == utils.get_hash(password + salt)
+
+def set_session_key(response):
+    ssesionid = 'ssesionid=' + str(utils._gen_salt(50))
+    response.headers['Set-cookie'] = ssesionid
+    return response

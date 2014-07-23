@@ -18,11 +18,21 @@ def main():
         password = request.form['password']
 
         if auth.authorize_user(username, password) and password:
-            return redirect('/login_success')
+            response = redirect('/login_success')
+            auth.set_session_key(response)
+            print response.headers
+            return response
         else:
             error = True
 
     return render_template("main.html", error=error)
+
+"""
+Content-Type: text/html; charset=utf-8
+Content-Length: 235
+Location: /login_success
+Set-Cookie: num=value
+"""
 
 
 @app.route('/login_success', methods=['GET', 'POST'])

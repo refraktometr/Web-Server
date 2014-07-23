@@ -1,6 +1,7 @@
 import hashlib
 import random
 import string
+import unittest2
 
 
 def _gen_salt(length=25):
@@ -14,3 +15,9 @@ def get_hash_with_salt(_string):
 
 def get_hash(_string):
     return hashlib.sha256(_string).hexdigest()
+
+
+class BaseTestCase(unittest2.TestCase):
+    def setUp(self):
+        from web_server import db
+        db.truncate_users()

@@ -1,7 +1,4 @@
-import hashlib
-import random
 import psycopg2
-import string
 
 from web_server import utils
 
@@ -21,10 +18,15 @@ def get_users():
     return cursor.fetchall()
 
 
+def truncate_users():
+    cursor = get_cursor()
+    cursor.execute("TRUNCATE TABLE users")
+
+
 def create_user(username, password):
     cursor = get_cursor()
 
-    password, salt = utils.get_password_hash(password)
+    password, salt = utils.get_hash_with_salt(password)
 
     query = "INSERT INTO users(username, password, salt) VALUES (%s, %s, %s) RETURNING id;"
     cursor.execute(query, (username, password, salt))
