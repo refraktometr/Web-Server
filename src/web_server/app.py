@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template
 
-from web_server import db, validation, auth
+from web_server import db, validation, auth, utils
 
 
 app = Flask(__name__)
@@ -26,17 +26,11 @@ def main():
 
     return render_template("main.html", error=error)
 
-"""
-Content-Type: text/html; charset=utf-8
-Content-Length: 235
-Location: /login_success
-Set-Cookie: num=value
-"""
-
 
 @app.route('/login_success', methods=['GET', 'POST'])
 def login_success():
-    return render_template("login_success.html")
+    req = utils.get_sessionid(request)
+    return render_template("login_success.html", req=req)
 
 
 @app.route('/registration', methods=['GET', 'POST'])

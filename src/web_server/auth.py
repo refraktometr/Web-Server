@@ -11,6 +11,6 @@ def authorize_user(username, password):
     return user_password == utils.get_hash(password + salt)
 
 def set_session_key(response):
-    ssesionid = 'ssesionid=' + str(utils._gen_salt(50))
-    response.headers['Set-cookie'] = ssesionid
+    sessionid = 'sessionid=' + str(utils._gen_salt(50))
+    response.headers['Set-cookie'] = sessionid
     return response
