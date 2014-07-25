@@ -33,6 +33,7 @@ def create_user(username, password):
     cursor.execute(query, (username, password, salt))
     return cursor.fetchone()[0]
 
+
 def get_valid_user(username, password):
     user_information = get_user_by_username(username)
 
@@ -63,14 +64,6 @@ def set_session_data(sessionid, data):
     query = "INSERT INTO sessions(sessionid, data) VALUES (%s, %s);"
     cursor.execute(query, (sessionid, data))
     return
-
-
-def get_user_id_by_sessionid(sessionid):
-    user_information = get_data_by_sessionid(sessionid)
-    _, data = user_information
-    data = json.loads(data)
-    user_id = data['user_id']
-    return user_id
 
 
 def get_data_by_sessionid(sessionid):
