@@ -30,8 +30,8 @@ def main():
 
 @app.route('/login_success', methods=['GET', 'POST'])
 def login_success():
-    user_id = auth.get_user_id(request)
-    return render_template("login_success.html", user_id=user_id)
+    users_data = db.get_all_users()
+    return render_template("login_success.html", users_data=users_data)
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -59,6 +59,17 @@ def confirmation():
     user_information = db.get_user_by_user_id(user_id)
     return render_template('confirmation.html', user_name=user_information[1], password=user_information[2])
 
+
+@app.route('/message', methods=['GET', 'POST'])
+def send_message():
+    user_id = auth.get_user_id(request)
+    recipient_id = request.args['recipient_id']
+    if request.method == 'POST':
+        message = request.form['message']
+        db.set_message(user_id, recipient_id, message)
+        return render_template('message.html')
+    else:
+        return render_template('message.html')
 
 if __name__ == "__main__":
     app.run()

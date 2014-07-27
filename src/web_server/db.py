@@ -70,3 +70,15 @@ def get_data_by_sessionid(sessionid):
     cursor = get_cursor()
     cursor.execute("SELECT * FROM sessions WHERE sessionid = %s", [sessionid])
     return cursor.fetchone()
+
+
+def get_all_users():
+    cursor = get_cursor()
+    cursor.execute("SELECT id, username FROM users")
+    return cursor.fetchall()
+
+def set_message(user_id, recipient_id, message):
+    cursor = get_cursor()
+    query = "INSERT INTO users_message (user_id, recipient_id, message) VALUES (%s, %s, %s);"
+    cursor.execute(query, (user_id, recipient_id, message))
+    return
