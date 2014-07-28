@@ -64,12 +64,13 @@ def confirmation():
 def send_message():
     user_id = auth.get_user_id(request)
     recipient_id = request.args['recipient_id']
+    old_message = db.get_old_message(user_id, recipient_id)
     if request.method == 'POST':
         text_message = request.form['message']
         db.set_message(user_id, recipient_id, text_message)
         render_template('message.html', recipient_id=recipient_id)
 
-    return render_template('message.html', recipient_id=recipient_id)
+    return render_template('message.html', recipient_id=recipient_id, old_message=old_message)
 
 if __name__ == "__main__":
     app.run()
