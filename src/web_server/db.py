@@ -54,9 +54,10 @@ def get_user_by_username(username):
 
 
 def get_user_by_user_id(user_id):
-     cursor = get_cursor()
-     cursor.execute("SELECT * FROM users WHERE id = %s", [user_id])
-     return cursor.fetchone()
+    cursor = get_cursor()
+    cursor.execute("SELECT * FROM users WHERE id = %s", [user_id])
+    return cursor.fetchone()
+
 
 def set_session_data(sessionid, data):
     cursor = get_cursor()
@@ -68,5 +69,6 @@ def set_session_data(sessionid, data):
 
 def get_data_by_sessionid(sessionid):
     cursor = get_cursor()
-    cursor.execute("SELECT * FROM sessions WHERE sessionid = %s", [sessionid])
-    return cursor.fetchone()
+    cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
+    raw_data = cursor.fetchone()[0]
+    return json.loads(raw_data)

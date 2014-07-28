@@ -1,6 +1,4 @@
 from web_server import db, utils
-import json
-
 
 
 def authorize_user(response, user_id):
@@ -9,6 +7,7 @@ def authorize_user(response, user_id):
     cookie = 'sessionid=' + sessionid
     response.headers['Set-cookie'] = cookie
     return response
+
 
 def get_user_id(request):
     sessionid = get_sessionid_from_cookie(request)
@@ -22,6 +21,7 @@ def get_sessionid_from_cookie(request):
     sessionid = cookies_dict['sessionid']
     return sessionid
 
+
 def get_cookies_from_request(request):
     req = request.headers
     cookies = req['Cookie']
@@ -29,8 +29,6 @@ def get_cookies_from_request(request):
 
 
 def get_user_id_by_sessionid(sessionid):
-    user_information = db.get_data_by_sessionid(sessionid)
-    _, data = user_information
-    data = json.loads(data)
-    user_id = data['user_id']
+    session_data = db.get_data_by_sessionid(sessionid)
+    user_id = session_data['user_id']
     return user_id
