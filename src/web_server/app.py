@@ -65,11 +65,11 @@ def send_message():
     user_id = auth.get_user_id(request)
     recipient_id = request.args['recipient_id']
     if request.method == 'POST':
-        message = request.form['message']
-        db.set_message(user_id, recipient_id, message)
-        return render_template('message.html')
-    else:
-        return render_template('message.html')
+        text_message = request.form['message']
+        db.set_message(user_id, recipient_id, text_message)
+        render_template('message.html', recipient_id=recipient_id)
+
+    return render_template('message.html', recipient_id=recipient_id)
 
 if __name__ == "__main__":
     app.run()
