@@ -1,11 +1,34 @@
 from web_server import db, utils
 
 
-def authorize_user(username, password):
-    user_information = db.get_user_by_username(username)
+def authorize_user(response, user_id):
+    sessionid = str(utils._gen_salt(50))
+    db.set_session_data(sessionid, {'user_id' : user_id})
+    cookie = 'sessionid=' + sessionid
+    response.headers['Set-cookie'] = cookie
+    return response
 
-    if not user_information:
-        return False
 
-    _, _, user_password, salt = user_information
-    return user_password == utils.get_hash(password + salt)
+def get_user_id(request):
+    sessionid = get_sessionid_from_cookie(request)
+    id_user = get_user_id_by_sessionid(sessionid)
+    return id_user
+
+
+def get_sessionid_from_cookie(request):
+    cookies = get_cookies_from_request(request)
+    cookies_dict = utils.parsi_cookies_to_dict(cookies)
+    sessionid = cookies_dict['sessionid']
+    return sessionid
+
+
+def get_cookies_from_request(request):
+    req = request.headers
+    cookies = req['Cookie']
+    return cookies
+
+
+def get_user_id_by_sessionid(sessionid):
+    session_data = db.get_data_by_sessionid(sessionid)
+    user_id = session_data['user_id']
+    return user_id

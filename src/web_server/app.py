@@ -17,8 +17,11 @@ def main():
         username = request.form['username']
         password = request.form['password']
 
-        if auth.authorize_user(username, password) and password:
-            return redirect('/login_success')
+        user_id = db.get_valid_user(username, password)
+        if user_id:
+            response = redirect('/login_success')
+            auth.authorize_user(response, user_id)
+            return response
         else:
             error = True
 
@@ -27,7 +30,8 @@ def main():
 
 @app.route('/login_success', methods=['GET', 'POST'])
 def login_success():
-    return render_template("login_success.html")
+    user_id = auth.get_user_id(request)
+    return render_template("login_success.html", user_id=user_id)
 
 
 @app.route('/registration', methods=['GET', 'POST'])
