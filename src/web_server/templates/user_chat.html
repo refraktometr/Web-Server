@@ -7,12 +7,18 @@
 <br/><br/>
 Enter text message
 <br/>
-{{ recipient_id }}
+
 {{ old_message }}
+
 <br/>
-    <form action="/message?recipient_id={{ recipient_id }}" method="post">
+    <form action="" method="post">
     <input type="text" name="message" value="{{ message }}"/>
     <input type="submit"/>
     </form>
+<br/><br/><br/>
+
+<form action="/logout">
+<button> logout </button>
+</form>
 </body>
 </html>
