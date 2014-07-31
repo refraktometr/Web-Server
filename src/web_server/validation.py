@@ -1,4 +1,5 @@
 from web_server import db, auth
+from flask import Flask, request, redirect
 
 
 def validate_username(username):
@@ -28,6 +29,11 @@ def validate_password(password):
 
 
 def validate_sessionid(request):
-    sessionid = auth.get_sessionid_from_cookie(request)
-    if not db.get_sessionid():
-     return True
+    req = request.headers
+    for i in req:
+        if i == 'Cookie':
+            sessionid = auth.get_sessionid_from_cookie(request)
+            if db.get_valid_sessionid(sessionid):
+                response = redirect('/chat')
+                return response
+    return request

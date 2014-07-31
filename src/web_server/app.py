@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template
 
-from web_server import db, validation, auth
+from web_server import db, validation, auth, utils
 
 
 app = Flask(__name__)
@@ -11,11 +11,11 @@ app.debug = True
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    error = False
     sessionid = auth.get_sessionid_from_cookie(request)
     if db.get_valid_sessionid(sessionid):
         return redirect('/chat')
 
+    error = False
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -75,11 +75,14 @@ def user_chat(recipient_id):
 
     return render_template('user_chat.html', recipient_id=recipient_id, old_message=old_message)
 
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     sessionid = auth.get_sessionid_from_cookie(request)
     db.del_session(sessionid)
-    return render_template('logout.html')
+    response = redirect('/')
+    utils.delete_cookie(response, 'sessionid')
+    return response
 
 if __name__ == "__main__":
     app.run()

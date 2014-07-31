@@ -3,14 +3,15 @@
 <head>
     <title></title>
 </head>
-<body>
- Hello authorization is successful !!!!
-
- <br/>
-
- {% for i in users_data %}
-     <a href="/chat/user/{{ i[0] }}/">  {{ i[1] }}   </a> <br/>
- {% endfor %}
-
-</body>
+   <body>
+    Hello authorization is successful !!!!
+    <br/>
+    {% for i in users_data %}
+       <a href="/chat/user/{{ i[0] }}/">  {{ i[1] }}   </a> <br/>
+    {% endfor %}
+       <br/> <br/>
+    <form action="/logout">
+    <button> logout </button>
+    <form/>
+   </body>
 </html>
