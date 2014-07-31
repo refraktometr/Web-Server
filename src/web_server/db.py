@@ -72,3 +72,22 @@ def get_data_by_sessionid(sessionid):
     cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
     raw_data = cursor.fetchone()[0]
     return json.loads(raw_data)
+
+
+def get_all_users():
+    cursor = get_cursor()
+    cursor.execute("SELECT id, username FROM users")
+    return cursor.fetchall()
+
+
+def set_message(user_id, recipient_id, text_message):
+    cursor = get_cursor()
+    query = "INSERT INTO user_message (user_id, recipient_id, text_message) VALUES (%s, %s, %s);"
+    cursor.execute(query, (user_id, recipient_id, text_message))
+    return
+
+def get_old_message(user_id, recipient_id):
+    cursor = get_cursor()
+    query = "SELECT text_message FROM user_message WHERE user_id=%s AND recipient_id=%s"
+    cursor.execute(query, (user_id, recipient_id))
+    return cursor.fetchall()

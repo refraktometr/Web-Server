@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<br/><br/>
+Enter text message
+<br/>
+{{ recipient_id }}
+{{ old_message }}
+<br/>
+    <form action="/message?recipient_id={{ recipient_id }}" method="post">
+    <input type="text" name="message" value="{{ message }}"/>
+    <input type="submit"/>
+    </form>
+</body>
+</html>

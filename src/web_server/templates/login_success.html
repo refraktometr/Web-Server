@@ -5,8 +5,12 @@
 </head>
 <body>
  Hello authorization is successful !!!!
-{{ user_id }}
+ <br/>
+ {% for i in users_data %}
+ <a href="/message?recipient_id={{ i[0] }}">  {{ i[1] }}   </a> <br/>
+ {% endfor %}
 
+ {{ users_data }}
 
 </body>
 </html>
