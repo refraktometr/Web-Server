@@ -1,5 +1,5 @@
 from web_server import db, auth
-from flask import Flask, request, redirect
+from flask import redirect
 
 
 def validate_username(username):

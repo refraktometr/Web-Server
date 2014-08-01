@@ -19,8 +19,8 @@ def main():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
         user_id = db.get_valid_user(username, password)
+
         if user_id:
             response = redirect('/chat')
             auth.authorize_user(response, user_id)
@@ -59,21 +59,26 @@ def confirmation():
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    users_data = db.get_all_users()
+    if auth.check_user_authorized(request):
+        users_data = db.get_all_users()
+    else:
+        return redirect('/error')
     return render_template("chat.html", users_data=users_data)
 
 
 @app.route('/chat/user/<recipient_id>/', methods=['GET', 'POST'])
 def user_chat(recipient_id):
-    user_id = auth.get_user_id(request)
-    old_message = db.get_messages(user_id, recipient_id)
+    if auth.check_user_authorized(request):
+        user_id = auth.get_user_id(request)
+        message_history = db.get_messages(user_id, recipient_id)
+        if request.method == 'POST':
+            text_message = request.form['message']
+            db.set_message(user_id, recipient_id, text_message)
+            return redirect('/chat/user/{}/'.format(recipient_id))
+    else:
+        return redirect('/error')
 
-    if request.method == 'POST':
-        text_message = request.form['message']
-        db.set_message(user_id, recipient_id, text_message)
-        return redirect('/chat/user/{}/'.format(recipient_id))
-
-    return render_template('user_chat.html', recipient_id=recipient_id, old_message=old_message)
+    return render_template('user_chat.html', recipient_id=recipient_id, message_history=message_history)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -83,6 +88,12 @@ def logout():
     response = redirect('/')
     utils.delete_cookie(response, 'sessionid')
     return response
+
+
+@app.route('/error', methods=['GET'])
+def error():
+    return render_template('error.html')
+
 
 if __name__ == "__main__":
     app.run()

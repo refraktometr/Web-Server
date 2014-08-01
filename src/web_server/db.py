@@ -68,9 +68,12 @@ def set_session_data(sessionid, data):
 
 
 def get_data_by_sessionid(sessionid):
-    cursor = get_cursor()
-    cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
-    raw_data = cursor.fetchone()[0]
+    if sessionid:
+        cursor = get_cursor()
+        cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
+        raw_data = cursor.fetchone()[0]
+    else:
+        raw_data = json.dumps('')
     return json.loads(raw_data)
 
 def get_valid_sessionid(sessionid):
@@ -89,6 +92,9 @@ def get_all_users():
     cursor = get_cursor()
     cursor.execute("SELECT id, username FROM users")
     return cursor.fetchall()
+
+
+
 
 
 def set_message(user_id, recipient_id, text_message):
@@ -115,3 +121,13 @@ def get_messages(user_id, recipient_id):
     """
     cursor.execute(query, (user_id, recipient_id, recipient_id, user_id))
     return cursor.fetchall()
+
+
+def check_id_in_db(user_id):
+    if user_id:
+        cursor = get_cursor()
+        cursor.execute("SELECT id FROM users WHERE id = %s", [user_id])
+        return cursor.fetchone()
+    else:
+        return None
+

@@ -2,7 +2,7 @@ import hashlib
 import random
 import string
 import unittest2
-from flask import Flask, request
+
 
 
 def _gen_salt(length=25):
@@ -25,8 +25,9 @@ def parsi_cookies_to_dict(cookies):
 
     cookies_dict = {}
     for i in cookies:
-        k = i.split('=')
-        cookies_dict[k[0]] = k[1]
+        if '=' in i:
+            k = i.split('=')
+            cookies_dict[k[0]] = k[1]
 
     return cookies_dict
 
