@@ -68,13 +68,13 @@ def set_session_data(sessionid, data):
 
 
 def get_data_by_sessionid(sessionid):
-    if sessionid:
-        cursor = get_cursor()
-        cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
-        raw_data = cursor.fetchone()[0]
-    else:
-        raw_data = json.dumps('')
-    return json.loads(raw_data)
+    cursor = get_cursor()
+    cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
+    raw_data = cursor.fetchone()
+
+    if raw_data:
+        return json.loads(raw_data[0])
+
 
 def get_valid_sessionid(sessionid):
     cursor = get_cursor()
@@ -85,16 +85,12 @@ def get_valid_sessionid(sessionid):
 def del_session(sessionid):
     cursor = get_cursor()
     cursor.execute("DELETE FROM sessions WHERE sessionid = %s", [sessionid])
-    return
 
 
 def get_all_users():
     cursor = get_cursor()
     cursor.execute("SELECT id, username FROM users")
     return cursor.fetchall()
-
-
-
 
 
 def set_message(user_id, recipient_id, text_message):

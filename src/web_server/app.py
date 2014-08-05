@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template
 
-from web_server import db, validation, auth, utils
+from web_server import db, validation, auth
 
 
 app = Flask(__name__)
@@ -11,11 +11,9 @@ app.debug = True
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    sessionid = auth.get_sessionid_from_cookie(request)
-    if db.get_valid_sessionid(sessionid):
-        return redirect('/chat')
 
     error = False
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -51,6 +49,7 @@ def registration():
 
 
 @app.route('/confirmation', methods=['GET', 'POST'])
+@auth.check_authorization
 def confirmation():
     user_id = request.args['userId']
     user_information = db.get_user_by_user_id(user_id)
@@ -58,17 +57,19 @@ def confirmation():
 
 
 @app.route('/chat', methods=['GET', 'POST'])
+@auth.check_authorization
 def chat():
-    if auth.check_user_authorized(request):
+    if auth.get_user_id(request):
         users_data = db.get_all_users()
     else:
-        return redirect('/error')
+        return redirect('/')
     return render_template("chat.html", users_data=users_data)
 
 
 @app.route('/chat/user/<recipient_id>/', methods=['GET', 'POST'])
+@auth.check_authorization
 def user_chat(recipient_id):
-    if auth.check_user_authorized(request):
+    if auth.get_user_id(request):
         user_id = auth.get_user_id(request)
         message_history = db.get_messages(user_id, recipient_id)
         if request.method == 'POST':
@@ -76,23 +77,16 @@ def user_chat(recipient_id):
             db.set_message(user_id, recipient_id, text_message)
             return redirect('/chat/user/{}/'.format(recipient_id))
     else:
-        return redirect('/error')
+        return redirect('/')
 
     return render_template('user_chat.html', recipient_id=recipient_id, message_history=message_history)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    sessionid = auth.get_sessionid_from_cookie(request)
-    db.del_session(sessionid)
     response = redirect('/')
-    utils.delete_cookie(response, 'sessionid')
+    auth.logout_user(request, response)
     return response
-
-
-@app.route('/error', methods=['GET'])
-def error():
-    return render_template('error.html')
 
 
 if __name__ == "__main__":

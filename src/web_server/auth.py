@@ -1,4 +1,6 @@
 from web_server import db, utils
+from flask import Flask, request, redirect, render_template
+from functools import wraps
 
 
 def authorize_user(response, user_id):
@@ -9,32 +11,18 @@ def authorize_user(response, user_id):
 
 
 def get_user_id(request):
-    sessionid = get_sessionid_from_cookie(request)
-    id_user = get_user_id_by_sessionid(sessionid)
-    return id_user
+    sessionid = utils.get_cookie_value(request, cookie_key='sessionid')
+
+    if not sessionid:
+        return
+
+    session_data = db.get_data_by_sessionid(sessionid)
+
+    if session_data:
+        return session_data.get('user_id')
 
 
-def get_sessionid_from_cookie(request):
-    cookies = get_cookies_from_request(request)
-    cookies_dict = utils.parsi_cookies_to_dict(cookies)
-    if 'sessionid' in cookies_dict:
-        sessionid = cookies_dict['sessionid']
-    else:
-        sessionid = None
-    return sessionid
-
-
-def get_cookies_from_request(request):
-    req = request.headers
-    if 'Cookie' in req:
-        cookies = req['Cookie']
-        return cookies
-    else:
-        cookies = ''
-        return cookies
-
-
-def get_user_id_by_sessionid(sessionid):
+def _get_user_id_by_sessionid(sessionid):
     session_data = db.get_data_by_sessionid(sessionid)
     if 'user_id' in session_data:
         user_id = session_data['user_id']
@@ -42,12 +30,22 @@ def get_user_id_by_sessionid(sessionid):
         user_id = None
     return user_id
 
-def check_user_authorized(request):
 
-    user_id = get_user_id(request)
-    if db.check_id_in_db(user_id):
-       answer = True
-    else:
-        answer = False
+def logout_user(request, response):
+    sessionid = utils.get_cookie_value(request, cookie_key='sessionid')
+    db.del_session(sessionid)
+    utils.delete_cookie(response, 'sessionid')
+    return response
 
-    return answer
+
+def check_authorization(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        if get_user_id(request):
+            response = func(*args, **kwargs)
+        else:
+            response = redirect('/')
+        return response
+
+    return wrapper

@@ -1,18 +1,17 @@
+# coding=utf-8
 
-from web_server.db import get_cursor
+def show_debag_info(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        print args, kwargs
+        return result
+    return wrapper
 
 
 
+def proizvedenie(a, b):
+    return a * b
 
-def check_id_in_db(user_id):
-    if user_id:
-        cursor = get_cursor()
-        cursor.execute("SELECT id FROM users WHERE id = %s", [user_id])
-        return cursor.fetchone()
-    else:
-        return None
+proizvedenie = show_debag_info(proizvedenie)
 
-user_id = -21
-a = check_id_in_db(user_id)
-
-print a
+proizvedenie(10, 20)
