@@ -25,8 +25,8 @@ def _parse_cookies_to_dict(cookies):
     cookies_dict = {}
     for i in cookies:
         if '=' in i:
-            k = i.split('=')
-            cookies_dict[k[0]] = k[1]
+            key, value = i.split('=')
+            cookies_dict[key] = value
 
     return cookies_dict
 
