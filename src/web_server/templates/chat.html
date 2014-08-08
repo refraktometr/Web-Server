@@ -7,13 +7,23 @@
 <body>
     Hello !!!!
     <br/>
-    {% for i in users_data %}
-       <a href="/chat/user/{{ i[0] }}/">  {{ i[1] }}   </a> <br/>
-    {% endfor %}
-       <br/> <br/>
 
-    <form action="/logout">
-    <button> logout </button>
-    <form/>
+    {% for user_id, username in users_data %}
+        <a href="/chat/user/{{ user_id }}/">  {{ username }} </a>
+
+        {% with number=new_messages_number[user_id]  %}
+            {% if number %}
+                (+ {{ number }})
+            {% endif %}
+        {% endwith %}
+
+        <br/>
+        <br/>
+    {% endfor %}
+
+    <br/> <br/>
+
+    {% include "includes/logout.html" %}
+
 </body>
 </html>

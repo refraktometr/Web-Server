@@ -41,8 +41,10 @@ def logout_user(request, response):
 def check_authorization(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        user_id = get_user_id(request)
 
-        if get_user_id(request):
+        if user_id:
+            kwargs['user_id'] = user_id
             response = func(*args, **kwargs)
         else:
             response = redirect('/')

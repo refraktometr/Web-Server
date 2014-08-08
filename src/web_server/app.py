@@ -50,34 +50,31 @@ def registration():
 
 @app.route('/confirmation', methods=['GET', 'POST'])
 @auth.check_authorization
-def confirmation():
-    user_id = request.args['userId']
+def confirmation(user_id):
     user_information = db.get_user_by_user_id(user_id)
     return render_template('confirmation.html', user_name=user_information[1], password=user_information[2])
 
 
 @app.route('/chat', methods=['GET', 'POST'])
 @auth.check_authorization
-def chat():
-    if auth.get_user_id(request):
-        users_data = db.get_all_users()
-    else:
-        return redirect('/')
-    return render_template("chat.html", users_data=users_data)
+def chat(user_id):
+    new_messages_number = db.get_number_new_messages(user_id)
+    users_data = db.get_all_users()
+
+    return render_template("chat.html", users_data=users_data, new_messages_number=new_messages_number)
 
 
 @app.route('/chat/user/<recipient_id>/', methods=['GET', 'POST'])
 @auth.check_authorization
-def user_chat(recipient_id):
-    if auth.get_user_id(request):
-        user_id = auth.get_user_id(request)
-        message_history = db.get_messages(user_id, recipient_id)
-        if request.method == 'POST':
-            text_message = request.form['message']
-            db.set_message(user_id, recipient_id, text_message)
-            return redirect('/chat/user/{}/'.format(recipient_id))
-    else:
-        return redirect('/')
+def user_chat(user_id, recipient_id):
+
+    message_history = db.get_messages(user_id, recipient_id)
+    db.mark_messages_as_read(user_id, recipient_id)
+
+    if request.method == 'POST':
+        text_message = request.form['message']
+        db.set_message(user_id, recipient_id, text_message)
+        return redirect('/chat/user/{}/'.format(recipient_id))
 
     return render_template('user_chat.html', recipient_id=recipient_id, message_history=message_history)
 

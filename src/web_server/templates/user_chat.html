@@ -4,22 +4,23 @@
     <title></title>
 </head>
 <body>
-<br/><br/>
-Enter text message
-<br/>
 
-{{ message_history }}
+    <br/><br/>
+    Enter text message
+    <br/>
 
-<br/>
-    <form action="" method="post">
-    <input type="text" name="message" value="{{ message }}"/>
-    <input type="submit"/>
-    </form>
-<br/><br/><br/>
+    {{ message_history }}
 
-<br/><br/><br/><br/>
-<form action="/logout">
-<button> logout </button>
-</form>
+    <br/>
+        <form action="" method="post">
+            <input type="text" name="message" value="{{ message }}"/>
+            <input type="submit"/>
+        </form>
+
+    <br/><br/><br/>
+    <br/><br/><br/><br/>
+
+    {% include "includes/logout.html" %}
+
 </body>
 </html>

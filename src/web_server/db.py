@@ -119,11 +119,20 @@ def get_messages(user_id, recipient_id):
     return cursor.fetchall()
 
 
-def check_id_in_db(user_id):
-    if user_id:
-        cursor = get_cursor()
-        cursor.execute("SELECT id FROM users WHERE id = %s", [user_id])
-        return cursor.fetchone()
-    else:
-        return None
+def get_number_new_messages(recipient_id):
+    number_messages = {}
+    cursor = get_cursor()
+    query = """SELECT user_id, COUNT(text_message) FROM user_message
+                WHERE recipient_id={} AND flag=False  GROUP BY user_id""".format(recipient_id)
+    cursor.execute(query)
+    number_messages = cursor.fetchall()
+    number_messages = dict(number_messages)
+
+    return number_messages
+
+
+def mark_messages_as_read(user_id, recipient_id):
+    cursor = get_cursor()
+    query = "UPDATE user_message  SET flag = True WHERE recipient_id=%s AND user_id=%s "
+    cursor.execute(query, (user_id, recipient_id))
 
