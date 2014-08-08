@@ -22,15 +22,6 @@ def get_user_id(request):
         return session_data.get('user_id')
 
 
-def _get_user_id_by_sessionid(sessionid):
-    session_data = db.get_data_by_sessionid(sessionid)
-    if 'user_id' in session_data:
-        user_id = session_data['user_id']
-    else:
-        user_id = None
-    return user_id
-
-
 def logout_user(request, response):
     sessionid = utils.get_cookie_value(request, cookie_key='sessionid')
     db.del_session(sessionid)

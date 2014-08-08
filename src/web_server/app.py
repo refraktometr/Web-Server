@@ -11,7 +11,6 @@ app.debug = True
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-
     error = False
 
     if request.method == 'POST':

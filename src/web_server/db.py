@@ -120,11 +120,12 @@ def get_messages(user_id, recipient_id):
 
 
 def get_number_new_messages(recipient_id):
+    #recipient_id = [recipient_id]
     number_messages = {}
     cursor = get_cursor()
     query = """SELECT user_id, COUNT(text_message) FROM user_message
-                WHERE recipient_id={} AND flag=False  GROUP BY user_id""".format(recipient_id)
-    cursor.execute(query)
+                WHERE recipient_id=%s AND flag=False  GROUP BY user_id"""
+    cursor.execute(query, [recipient_id])
     number_messages = cursor.fetchall()
     number_messages = dict(number_messages)
 
