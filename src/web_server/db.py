@@ -70,8 +70,21 @@ def set_session_data(sessionid, data):
 def get_data_by_sessionid(sessionid):
     cursor = get_cursor()
     cursor.execute("SELECT data FROM sessions WHERE sessionid = %s", [sessionid])
-    raw_data = cursor.fetchone()[0]
-    return json.loads(raw_data)
+    raw_data = cursor.fetchone()
+
+    if raw_data:
+        return json.loads(raw_data[0])
+
+
+def get_valid_sessionid(sessionid):
+    cursor = get_cursor()
+    cursor.execute("SELECT * FROM sessions WHERE sessionid = %s", [sessionid])
+    return cursor.fetchone()
+
+
+def del_session(sessionid):
+    cursor = get_cursor()
+    cursor.execute("DELETE FROM sessions WHERE sessionid = %s", [sessionid])
 
 
 def get_all_users():
@@ -86,8 +99,38 @@ def set_message(user_id, recipient_id, text_message):
     cursor.execute(query, (user_id, recipient_id, text_message))
     return
 
-def get_old_message(user_id, recipient_id):
+
+def get_messages(user_id, recipient_id):
     cursor = get_cursor()
-    query = "SELECT text_message FROM user_message WHERE user_id=%s AND recipient_id=%s"
-    cursor.execute(query, (user_id, recipient_id))
+    query = """
+        SELECT user_id, text_message
+        FROM (
+            SELECT *
+            FROM user_message
+            WHERE user_id=%s AND recipient_id=%s
+            UNION
+            SELECT *
+            FROM user_message
+            WHERE user_id=%s AND recipient_id=%s
+        ) AS a
+        ORDER BY created_at
+    """
+    cursor.execute(query, (user_id, recipient_id, recipient_id, user_id))
     return cursor.fetchall()
+
+
+def get_number_new_messages(recipient_id):
+    cursor = get_cursor()
+    query = """SELECT user_id, COUNT(text_message) FROM user_message
+                WHERE recipient_id=%s AND flag=False  GROUP BY user_id"""
+    cursor.execute(query, [recipient_id])
+    number_messages = cursor.fetchall()
+
+    return dict(number_messages)
+
+
+def mark_messages_as_read(user_id, recipient_id):
+    cursor = get_cursor()
+    query = "UPDATE user_message  SET flag = True WHERE recipient_id=%s AND user_id=%s "
+    cursor.execute(query, (user_id, recipient_id))
+

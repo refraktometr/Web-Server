@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+    <br/><br/>
+    Enter text message
+    <br/>
+
+    {{ message_history }}
+
+    <br/>
+        <form action="" method="post">
+            <input type="text" name="message" value="{{ message }}"/>
+            <input type="submit"/>
+        </form>
+
+    <br/><br/><br/>
+    <br/><br/><br/><br/>
+
+    {% include "includes/logout.html" %}
+
+</body>
+</html>

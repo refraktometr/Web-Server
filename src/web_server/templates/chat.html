@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+<body>
+    Hello !!!!
+    <br/>
+
+    {% for user_id, username in users_data %}
+        <a href="/chat/user/{{ user_id }}/">  {{ username }} </a>
+
+        {% with number=new_messages_number[user_id]  %}
+            {% if number %}
+                (+ {{ number }})
+            {% endif %}
+        {% endwith %}
+
+        <br/>
+        <br/>
+    {% endfor %}
+
+    <br/> <br/>
+
+    {% include "includes/logout.html" %}
+
+</body>
+</html>
