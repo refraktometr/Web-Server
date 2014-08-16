@@ -8,17 +8,19 @@
     Hello !!!!
     <br/>
 
-    {% for user_id, username, number in data %}
+    {% for user_id, username, number_message in data %}
         <a href="/chat/user/{{ user_id }}/">  {{ username }} </a>
-
-        {{ data }}
+        {% if number_message %}
+            ({{ number_message }})
+        {% endif %}
         <br/>
         <br/>
     {% endfor %}
 
-    <br/> <br/>
+    <br/><br/>
+         <br/>
 
-    {% include "includes/logout.html" %}
+    {% include "users/includes/logout.html" %}
 
 </body>
 </html>

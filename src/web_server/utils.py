@@ -51,3 +51,9 @@ def get_cookie_value(request, cookie_key, default=None):
     cookies = request.headers.get('Cookie', '')
     cookies_dict = _parse_cookies_to_dict(cookies)
     return cookies_dict.get(cookie_key, default)
+
+def sorting_messages_by_sender(user_id, recipient_id, message_history):
+    message_history = dict(message_history)
+    _, user_name, _, _ = get_user_by_user_id(user_id)
+    _, recipient_name, _, _ = get_user_by_user_id(recipient_id)
+    return 

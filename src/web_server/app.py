@@ -69,13 +69,18 @@ def user_chat(user_id, recipient_id):
 
     message_history = db.get_messages(user_id, recipient_id)
     db.mark_messages_as_read(user_id, recipient_id)
+    _, user_name, _, _ = db.get_user_by_user_id(user_id)
+    _, recipient_name, _, _ = db.get_user_by_user_id(recipient_id)
+    recipient_id = int(recipient_id)
+    user_id = int(user_id)
 
     if request.method == 'POST':
         text_message = request.form['message']
         db.set_message(user_id, recipient_id, text_message)
         return redirect('/chat/user/{}/'.format(recipient_id))
 
-    return render_template('user_chat.html', recipient_id=recipient_id, message_history=message_history)
+    return render_template('user_chat.html', recipient_id=recipient_id, user_id=user_id, message_history=message_history,
+                           user_name=user_name, recipient_name=recipient_name)
 
 
 @app.route('/logout', methods=['GET', 'POST'])

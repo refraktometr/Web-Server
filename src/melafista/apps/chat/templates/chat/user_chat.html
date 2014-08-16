@@ -5,12 +5,12 @@
 </head>
 <body>
     <br/>
-    {% for i in message_history %}
-        {% if i[0] == recipient_id %}
-            {{ recipient_name }}   <pre>      {{ i[1] }} </pre> <br/>
+    {% for id, text in message_history %}
+        {% if id == recipient_id %}
+            {{ recipient_name }}   <pre>      {{ text }} </pre> <br/>
         {% else %}
-            {% if i[0] == user_id %}
-                {{ user_name }}   <pre>      {{ i[1] }} </pre> <br/>
+            {% if id == user_id %}
+                {{ user_name }}   <pre>      {{ text }} </pre> <br/>
             {% endif %}
         {% endif %}
     {% endfor %}
@@ -26,7 +26,7 @@
     <br/><br/><br/>
     <br/><br/><br/><br/>
 
-    {% include "includes/logout.html" %}
+    {% include "users/includes/logout.html" %}
 
 </body>
 </html>
