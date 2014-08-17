@@ -7,7 +7,7 @@ from apps.chat.db import get_number_new_messages, get_messages, set_message, mar
 @auth.check_authorization
 def chat(request, user_id):
     new_messages_number = get_number_new_messages(user_id)
-    users_data = users.db.get_all_users()
+    users_data = users.db.get_id_and_username_all_users()
     data = []
     for id, name in users_data:
         number = new_messages_number.get(id)

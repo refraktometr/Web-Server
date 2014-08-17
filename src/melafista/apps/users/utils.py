@@ -1,7 +1,6 @@
 import hashlib
 import random
 import string
-import unittest2
 
 
 def _gen_salt(length=32):
@@ -29,5 +28,3 @@ def delete_cookie(response, name):
 def get_cookie_value(request, cookie_key, default=None):
     cookies = request.COOKIES
     return cookies.get(cookie_key, default)
-
-

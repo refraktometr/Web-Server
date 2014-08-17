@@ -1,6 +1,5 @@
 from django.shortcuts import render_to_response, redirect
 from apps.users import db, auth, validation
-from apps.users.db import get_cursor
 
 
 def index(request):
@@ -47,7 +46,6 @@ def confirmation(request, user_id):
     return render_to_response('users/confirmation.html', {
         'user_name' : user_information[1],
     })
-
 
 
 def logout(request):
