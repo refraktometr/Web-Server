@@ -81,3 +81,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 APPEND_SLASH = False
+
+TEST_RUNNER = 'melafista.test_runner.TestRunner'

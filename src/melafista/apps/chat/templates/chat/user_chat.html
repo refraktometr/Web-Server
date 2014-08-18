@@ -9,7 +9,6 @@
         {% if id == recipient_id %}
             {{ recipient_name }}   <pre>      {{ text }} </pre> <br/>
         {% else %}
-            {% if id == user_id %}
                 {{ user_name }}   <pre>      {{ text }} </pre> <br/>
             {% endif %}
         {% endif %}

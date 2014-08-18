@@ -33,18 +33,16 @@ def registration(request):
         if not errors:
             user_id = db.create_user(username, password)
             return redirect('/confirmation/user_id/{}/'.format(user_id))
-        else:
-            return render_to_response('users/registration.html', {
+
+    return render_to_response('users/registration.html', {
                 'errors' : errors,
-                username : username
             })
-    return render_to_response('users/registration.html')
 
 
 def confirmation(request, user_id):
-    user_information = db.get_user_by_user_id(user_id)
+    _, user_name, _, _ = db.get_user_by_user_id(user_id)
     return render_to_response('users/confirmation.html', {
-        'user_name' : user_information[1],
+        'user_name' : user_name,
     })
 
 

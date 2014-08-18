@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response, redirect
-from apps import users
+#from apps import users
 from apps.users import db, auth
 from apps.chat.db import get_number_new_messages, get_messages, set_message, mark_messages_as_read
 
@@ -7,7 +7,7 @@ from apps.chat.db import get_number_new_messages, get_messages, set_message, mar
 @auth.check_authorization
 def chat(request, user_id):
     new_messages_number = get_number_new_messages(user_id)
-    users_data = users.db.get_id_and_username_all_users()
+    users_data = db.get_id_and_username_all_users()
     data = []
     for id, name in users_data:
         number = new_messages_number.get(id)
@@ -20,12 +20,12 @@ def chat(request, user_id):
 @auth.check_authorization
 def user_chat(request, recipient_id, user_id):
 
+    user_id = int(user_id)
+    recipient_id = int(recipient_id)
     message_history = get_messages(user_id, recipient_id)
     mark_messages_as_read(user_id, recipient_id)
-    _, user_name, _, _ = users.db.get_user_by_user_id(user_id)
-    _, recipient_name, _, _ = users.db.get_user_by_user_id(recipient_id)
-    recipient_id = int(recipient_id)
-    user_id = int(user_id)
+    _, user_name, _, _ = db.get_user_by_user_id(user_id)
+    _, recipient_name, _, _ = db.get_user_by_user_id(recipient_id)
 
     if request.method == 'POST':
         text_message = request.POST['message']

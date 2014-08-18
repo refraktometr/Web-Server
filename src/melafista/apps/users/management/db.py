@@ -1,8 +1,10 @@
 import psycopg2
 
 
-def get_cursor(name_database):
-    query = "host='localhost' dbname=%s user='postgres' password='postgres'" % name_database
+def get_cursor(name_database=None):
+    query = "host='localhost'  user='postgres' password='postgres'"
+    if name_database:
+        query += " dbname=%s" % name_database
     conn = psycopg2.connect(query)
     cursor = conn.cursor()
     conn.autocommit = True
@@ -10,13 +12,10 @@ def get_cursor(name_database):
 
 
 def create_database(name_database):
-    conn = psycopg2.connect("host='localhost' user='postgres' password='postgres'")
-    cursor = conn.cursor()
-    conn.autocommit = True
+    cursor = get_cursor()
     query = "CREATE DATABASE {};".format(name_database)
     cursor.execute(query)
     print "database-", name_database, "is created"
-    return name_database
 
 
 def _create_sequence_user_id(name_database='melafista'):
@@ -54,3 +53,23 @@ def create_table_sessions(name_database='melafista'):
                     create_at timestamp DEFAULT NOW())""")
     print "table- sessions in-", name_database, "is created"
 
+
+def setup_database(database_name):
+    create_database(database_name)
+    create_table_users(name_database=database_name)
+    create_table_users_message(name_database=database_name)
+    create_table_sessions(name_database=database_name)
+
+
+def delete_database(name_database):
+    cursor = get_cursor()
+    query = "DROP DATABASE {};".format(name_database)
+    cursor.execute(query)
+    print "database-", name_database, "is deleted"
+
+
+def flush_tables(name_database):
+    cursor = get_cursor(name_database)
+    cursor.execute("TRUNCATE TABLE users_message CASCADE")
+    cursor.execute("TRUNCATE TABLE sessions CASCADE;")
+    cursor.execute("TRUNCATE TABLE users CASCADE;")
