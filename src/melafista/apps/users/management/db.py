@@ -1,5 +1,6 @@
 import psycopg2
-
+from apps.users import db
+from melafista import utils
 
 def get_cursor(name_database=None):
     query = "host='localhost'  user='postgres' password='postgres'"
@@ -48,7 +49,7 @@ def create_table_users_message(name_database='melafista'):
 def create_table_sessions(name_database='melafista'):
     cursor = get_cursor(name_database)
     cursor.execute("""CREATE TABLE sessions (
-                    session_id char(64) NOT NULL UNIQUE,
+                    session_id VARCHAR(64) NOT NULL UNIQUE,
                     data VARCHAR(10000) NOT NULL,
                     create_at timestamp DEFAULT NOW())""")
     print "table- sessions in-", name_database, "is created"
@@ -73,3 +74,13 @@ def flush_tables(name_database):
     cursor.execute("TRUNCATE TABLE users_message CASCADE")
     cursor.execute("TRUNCATE TABLE sessions CASCADE;")
     cursor.execute("TRUNCATE TABLE users CASCADE;")
+
+def create_random_users_in_table_users(numb_users=10):
+    username = {}
+    password = {}
+    user_id = {}
+    for i in range(numb_users):
+        username[i] = str(utils._gen_salt(30))
+        password[i] = str(utils._gen_salt(30))
+        user_id[i] = db.create_user(username[i], password[i])
+    return username, password, user_id

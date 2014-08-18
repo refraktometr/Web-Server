@@ -1,5 +1,5 @@
-from apps import users
-from melafista import db as base_db
+from melafista import base_db
+
 
 def set_message(user_id, recipient_id, text_message):
     cursor = base_db.get_cursor()
@@ -9,7 +9,6 @@ def set_message(user_id, recipient_id, text_message):
 
 
 def get_messages(user_id, recipient_id):
-    cursor = base_db.get_cursor()
     query = """
         SELECT user_id, text_message
         FROM (
@@ -23,16 +22,13 @@ def get_messages(user_id, recipient_id):
         ) AS a
         ORDER BY create_at
     """
-    cursor.execute(query, (user_id, recipient_id, recipient_id, user_id))
-    return cursor.fetchall()
+    return base_db.fetchall(query, user_id, recipient_id, recipient_id, user_id)
 
 
 def get_number_new_messages(recipient_id):
-    cursor = base_db.get_cursor()
     query = """SELECT user_id, COUNT(text_message) FROM users_message
-                WHERE recipient_id=%s AND flag_reading=False  GROUP BY user_id""" % recipient_id
-    cursor.execute(query)
-    number_messages = cursor.fetchall()
+                WHERE recipient_id=%s AND flag_reading=False  GROUP BY user_id"""
+    number_messages = base_db.fetchall(query, recipient_id)
 
     return dict(number_messages)
 
@@ -41,4 +37,3 @@ def mark_messages_as_read(user_id, recipient_id):
     cursor = base_db.get_cursor()
     query = "UPDATE users_message  SET flag_reading = True WHERE recipient_id=%s AND user_id=%s "
     cursor.execute(query, (user_id, recipient_id))
-

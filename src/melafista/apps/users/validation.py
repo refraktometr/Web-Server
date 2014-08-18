@@ -1,5 +1,4 @@
-from apps.users import db
-
+from apps.users import db as user_db
 
 def validate_username(username):
     errors = []
@@ -13,7 +12,7 @@ def validate_username(username):
     if not errors and len(username) > 64:
         errors.append("Username is too long")
 
-    if not errors and db.get_user_by_username(username):
+    if not errors and user_db.get_user_by_username(username):
         errors.append("User already exists")
 
     return errors
