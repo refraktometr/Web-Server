@@ -2,8 +2,7 @@ import json
 from apps.users import db as user_db
 from melafista import utils, base_db
 from melafista.test_case import TestCase
-from apps.users.management import db as commands_db
-
+from apps.users.management import db as management_db
 # run test command string python manage.py test -v 2
 
 
@@ -113,7 +112,7 @@ class TestSetSessionData(TestCase):
 
 class TestSetSessionData(TestCase):
     def test_del_session(self):
-        username, password, user_id = commands_db.create_random_users_in_table_users(2)
+        username, password, user_id = management_db.create_random_users_in_table_users(2)
         session_id = str(utils._gen_salt(50))
         session_id2 = str(utils._gen_salt(50))
         data = {'user_id' : user_id[0]}
@@ -143,13 +142,13 @@ class TestSetSessionData(TestCase):
 class TestGetIdAndUsernameAllUsers(TestCase):
     def test_get_id_and_username_all_users(self):
         number_users = 20
-        username, password, user_id = commands_db.create_random_users_in_table_users(number_users)
-        initial_arrey = []
+        username, password, user_id = management_db.create_random_users_in_table_users(number_users)
+        initial_array = []
         for i in range(number_users):
-            initial_arrey.append ((user_id[i], username[i]))
+            initial_array.append ((user_id[i], username[i]))
 
-        fetched_arrey = user_db.get_id_and_username_all_users()
+        fetched_array = user_db.get_id_and_username_all_users()
 
-        self.assertEqual(initial_arrey, fetched_arrey)
-        self.assertEqual(len(fetched_arrey), number_users)
+        self.assertEqual(initial_array, fetched_array)
+        self.assertEqual(len(fetched_array), number_users)
 
