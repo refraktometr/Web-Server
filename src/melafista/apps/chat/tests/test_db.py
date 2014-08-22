@@ -31,7 +31,7 @@ class TestGetMessage(TestCase):
         self.assertEqual([(user_id, text_message)], fetched_data)
         self.assertEqual([(user_id, text_message)], fetched_data2)
 
-    def test_false_get_messages(self):
+    def test_get_empty_messages(self):
         user_id = factories.create_user()
         recipient_id = factories.create_user()
         id_without_message = factories.create_user()
