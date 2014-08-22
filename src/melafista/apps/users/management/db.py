@@ -75,12 +75,3 @@ def flush_tables(name_database):
     cursor.execute("TRUNCATE TABLE sessions CASCADE;")
     cursor.execute("TRUNCATE TABLE users CASCADE;")
 
-def create_random_users_in_table_users(numb_users=10):
-    username = {}
-    password = {}
-    user_id = {}
-    for i in range(numb_users):
-        username[i] = str(utils._gen_salt(30))
-        password[i] = str(utils._gen_salt(30))
-        user_id[i] = db.create_user(username[i], password[i])
-    return username, password, user_id

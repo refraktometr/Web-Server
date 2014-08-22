@@ -25,3 +25,11 @@ def fetchall(query, *params):
     else:
         cursor.execute(query)
     return cursor.fetchall()
+
+
+def execute_in_db(query, *params):
+    cursor = get_cursor()
+    if params:
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)

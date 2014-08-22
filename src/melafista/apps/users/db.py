@@ -1,6 +1,4 @@
-import psycopg2
 import json
-from django.conf import settings
 from melafista import utils, base_db
 
 
@@ -34,10 +32,9 @@ def get_user_by_user_id(user_id):
 
 
 def set_session_data(session_id, data):
-    cursor = base_db.get_cursor()
     data = json.dumps(data)
     query = "INSERT INTO sessions(session_id, data) VALUES (%s, %s);"
-    cursor.execute(query, (session_id, data))
+    base_db.execute_in_db(query, session_id, data)
 
 
 def get_session_data(sessionid):
@@ -45,8 +42,7 @@ def get_session_data(sessionid):
 
 
 def del_session(sessionid):
-    cursor = base_db.get_cursor()
-    cursor.execute("DELETE FROM sessions WHERE session_id = %s", [sessionid])
+    base_db.execute_in_db("DELETE FROM sessions WHERE session_id = %s", sessionid)
 
 
 def get_id_and_username_all_users():

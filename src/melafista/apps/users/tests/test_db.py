@@ -2,6 +2,7 @@ import json
 from apps.users import db as user_db
 from melafista import utils, base_db
 from melafista.test_case import TestCase
+from apps.users.tests import factories
 from apps.users.management import db as management_db
 # run test command string python manage.py test -v 2
 
@@ -16,6 +17,7 @@ class TestCreateUser(TestCase):
         fetched_user_id, fetched_username, fetched_password, salt = base_db.fetchone("SELECT * FROM users")
 
         self.assertIsInstance(fetched_user_id, int)
+        self.assertEqual(user_id, fetched_user_id)
         self.assertEqual(username, fetched_username)
 
         hash_password, _ = utils.get_hash_with_salt(password, salt=salt)
@@ -112,17 +114,17 @@ class TestSetSessionData(TestCase):
 
 class TestSetSessionData(TestCase):
     def test_del_session(self):
-        username, password, user_id = management_db.create_random_users_in_table_users(2)
+        user_id1 = factories.create_user()
+        user_id2 = factories.create_user()
         session_id = str(utils._gen_salt(50))
         session_id2 = str(utils._gen_salt(50))
-        data = {'user_id' : user_id[0]}
-        data2 = {'user_id' : user_id[1]}
+        data = {'user_id' : user_id1}
+        data2 = {'user_id' : user_id2}
         user_db.set_session_data(session_id, data)
         user_db.set_session_data(session_id2, data2)
 
         fetched_session_id, fetched_data, fetched_create_at = user_db.get_session_data(session_id)
         fetched_session_id2, fetched_data2, fetched_create_at2 = user_db.get_session_data(session_id2)
-
 
         self.assertEqual(fetched_session_id, session_id)
         self.assertEqual(json.loads(fetched_data), data)
@@ -141,14 +143,10 @@ class TestSetSessionData(TestCase):
 
 class TestGetIdAndUsernameAllUsers(TestCase):
     def test_get_id_and_username_all_users(self):
-        number_users = 20
-        username, password, user_id = management_db.create_random_users_in_table_users(number_users)
-        initial_array = []
-        for i in range(number_users):
-            initial_array.append ((user_id[i], username[i]))
-
+        user1 = factories.create_user('vasia')
+        user2 = factories.create_user('petiya')
+        initial_array = [(user1, 'vasia'), (user2, 'petiya')]
         fetched_array = user_db.get_id_and_username_all_users()
 
         self.assertEqual(initial_array, fetched_array)
-        self.assertEqual(len(fetched_array), number_users)
-
+        self.assertEqual(len(fetched_array), 2)
