@@ -33,6 +33,5 @@ def get_number_new_messages(recipient_id):
 
 
 def mark_messages_as_read(user_id, recipient_id):
-    cursor = base_db.get_cursor()
     query = "UPDATE users_message  SET flag_reading = True WHERE recipient_id=%s AND user_id=%s "
-    cursor.execute(query, (user_id, recipient_id))
+    base_db.execute(query, user_id, recipient_id)

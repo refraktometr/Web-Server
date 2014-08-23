@@ -1,9 +1,7 @@
-import json
 from apps.users import db as user_db
 from melafista import utils, base_db
 from melafista.test_case import TestCase
 from apps.users.tests import factories
-from apps.users.management import db as management_db
 # run test command string python manage.py test -v 2
 
 
@@ -77,6 +75,14 @@ class TestGetUserByUsername(TestCase):
         hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_salt)
         self.assertEqual(hash_password, fetched_password)
 
+    def test_get_non_existent_username_returns_none(self):
+        username = 'johndoe'
+        password = '123123'
+        user_db.create_user(username, password)
+        fetched_data = user_db.get_user_by_username('qwe')
+
+        self.assertEqual(fetched_data, None)
+
 
 class TestGetUserByUserId(TestCase):
     def test_get_user_by_user_id(self):
@@ -87,13 +93,21 @@ class TestGetUserByUserId(TestCase):
         user_id, _, _, _ = user_db.get_user_by_username(username)
         fetched_id, fetched_username, fetched_password, fetched_salt = user_db.get_user_by_user_id(user_id)
 
-
         self.assertIsInstance(fetched_id, int)
         self.assertEqual(user_id, fetched_id)
         self.assertEqual(fetched_username, username)
 
         hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_salt)
         self.assertEqual(hash_password, fetched_password)
+
+    def test_get_non_existent_user_id_returns_none(self):
+        username = 'johndoe'
+        password = '123123'
+        user_db.create_user(username, password)
+        fetched_data = user_db.get_user_by_user_id(12324)
+
+        self.assertEqual(fetched_data, None)
+
 
 class TestSetSessionData(TestCase):
     def test_set_session_data(self):
@@ -103,16 +117,14 @@ class TestSetSessionData(TestCase):
         session_id = str(utils._gen_salt(50))
         data = {'user_id' : user_id}
 
-        user_db.set_session_data(session_id, data)
+        user_db.create_session_data(session_id, data)
 
-        fetched_session_id, fetched_data, fetched_create_at = user_db.get_session_data(session_id)
+        fetched_data = user_db.get_session_data(session_id)
 
-        self.assertEqual(fetched_session_id, session_id)
-        self.assertEqual(json.loads(fetched_data), data)
-        self.assertEqual(fetched_data, json.dumps(data))
+        self.assertEqual(fetched_data, data)
 
 
-class TestSetSessionData(TestCase):
+class TestDelSession(TestCase):
     def test_del_session(self):
         user_id1 = factories.create_user()
         user_id2 = factories.create_user()
@@ -120,8 +132,8 @@ class TestSetSessionData(TestCase):
         session_id2 = str(utils._gen_salt(50))
         data = {'user_id': user_id1}
         data2 = {'user_id': user_id2}
-        user_db.set_session_data(session_id, data)
-        user_db.set_session_data(session_id2, data2)
+        user_db.create_session_data(session_id, data)
+        user_db.create_session_data(session_id2, data2)
 
         user_db.del_session(session_id)
 

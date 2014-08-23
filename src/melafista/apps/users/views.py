@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from apps.users import auth, validation
 from apps.users import db as user_db
 
+
 def index(request):
     error = False
 

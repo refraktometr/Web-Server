@@ -8,7 +8,7 @@ SESSION_KEY='sessoinid'
 
 def authorize_user(response, user_id):
     sessionid = str(utils._gen_salt(50))
-    user_db.set_session_data(sessionid, {'user_id' : user_id})
+    user_db.create_session_data(sessionid, {'user_id' : user_id})
     utils.set_cookie(response, name=SESSION_KEY, value=sessionid)
     return response
 

@@ -31,7 +31,7 @@ def get_user_by_user_id(user_id):
     return base_db.fetchone("SELECT * FROM users WHERE id = %s", user_id)
 
 
-def set_session_data(session_id, data):
+def create_session_data(session_id, data):
     data = json.dumps(data)
     query = "INSERT INTO sessions(session_id, data) VALUES (%s, %s);"
     base_db.execute(query, session_id, data)
