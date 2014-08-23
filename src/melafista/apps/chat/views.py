@@ -29,7 +29,7 @@ def user_chat(request, recipient_id, user_id):
 
     if request.method == 'POST':
         text_message = request.POST['message']
-        db.set_message(user_id, recipient_id, text_message)
+        db.create_message(user_id, recipient_id, text_message)
         return redirect('/chat/user/{}/'.format(recipient_id))
 
     return render_to_response('chat/user_chat.html', {

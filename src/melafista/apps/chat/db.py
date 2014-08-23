@@ -1,7 +1,7 @@
 from melafista import base_db
 
 
-def set_message(user_id, recipient_id, text_message):
+def create_message(user_id, recipient_id, text_message):
     cursor = base_db.get_cursor()
     query = "INSERT INTO users_message (user_id, recipient_id, text_message) VALUES (%s, %s, %s);"
     cursor.execute(query, (user_id, recipient_id, text_message))
