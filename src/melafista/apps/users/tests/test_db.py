@@ -118,27 +118,18 @@ class TestSetSessionData(TestCase):
         user_id2 = factories.create_user()
         session_id = str(utils._gen_salt(50))
         session_id2 = str(utils._gen_salt(50))
-        data = {'user_id' : user_id1}
-        data2 = {'user_id' : user_id2}
+        data = {'user_id': user_id1}
+        data2 = {'user_id': user_id2}
         user_db.set_session_data(session_id, data)
         user_db.set_session_data(session_id2, data2)
-
-        fetched_session_id, fetched_data, fetched_create_at = user_db.get_session_data(session_id)
-        fetched_session_id2, fetched_data2, fetched_create_at2 = user_db.get_session_data(session_id2)
-
-        self.assertEqual(fetched_session_id, session_id)
-        self.assertEqual(json.loads(fetched_data), data)
-        self.assertEqual(fetched_data, json.dumps(data))
-        self.assertEqual(fetched_session_id2, session_id2)
-        self.assertEqual(json.loads(fetched_data2), data2)
-
 
         user_db.del_session(session_id)
 
         deleted_row = user_db.get_session_data(session_id)
+        fetched_data2 = user_db.get_session_data(session_id2)
+
         self.assertEqual(deleted_row, None)
-        self.assertEqual(fetched_session_id2, session_id2)
-        self.assertEqual(json.loads(fetched_data2), data2)
+        self.assertEqual(fetched_data2, data2)
 
 
 class TestGetIdAndUsernameAllUsers(TestCase):

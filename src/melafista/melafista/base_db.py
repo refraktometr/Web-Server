@@ -27,7 +27,7 @@ def fetchall(query, *params):
     return cursor.fetchall()
 
 
-def execute_in_db(query, *params):
+def execute(query, *params):
     cursor = get_cursor()
     if params:
         cursor.execute(query, params)

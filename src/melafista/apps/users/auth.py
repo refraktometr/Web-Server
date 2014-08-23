@@ -19,8 +19,7 @@ def get_user_id(request):
     if not sessionid:
         return
 
-    _, raw_data, _ = user_db.get_session_data(sessionid)
-    session_data = json.loads(raw_data)
+    session_data = user_db.get_session_data(sessionid)
 
     if session_data:
         return session_data.get('user_id')

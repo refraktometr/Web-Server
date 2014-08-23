@@ -5,7 +5,7 @@ from apps.users.tests import factories
 
 
 class TestCreateMessage(TestCase):
-    def test_success_set_message(self):
+    def test_success_create_message(self):
         user_id = factories.create_user()
         recipient_id = factories.create_user()
         text_message = 'Hello world'
@@ -48,16 +48,18 @@ class TestGetMessage(TestCase):
 class TestGetNumberNewMessages(TestCase):
     def test_get_number_new_messages(self):
         user_id = factories.create_user()
-        recipient_id = factories.create_user()
+        user_id2 = factories.create_user()
+        user_id3 = factories.create_user()
         text_message = 'Hello world'
-        number_new_messages = 5
-        for i in range(number_new_messages):
-            chat_db.create_message(user_id, recipient_id, text_message)
+        chat_db.create_message(user_id, user_id2, text_message)
+        chat_db.create_message(user_id, user_id2, text_message)
 
-        fetched_number_new_messages = chat_db.get_number_new_messages(recipient_id)
+        chat_db.create_message(user_id2, user_id, text_message)
+
+        fetched_number_new_messages = chat_db.get_number_new_messages(user_id2)
         fetched_number = fetched_number_new_messages[user_id]
 
-        self.assertEqual(number_new_messages, fetched_number)
+        self.assertEqual(2, fetched_number)
 
 
 class TestMarkMessagesAsRead(TestCase):

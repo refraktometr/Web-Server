@@ -3,7 +3,7 @@ from apps.users.management import db as commands_db
 from apps.users import db as user_db
 
 
-class TestAuthorizeUser(TestCase):
+"""class TestAuthorizeUser(TestCase):
     def test_authorize_user(self):
 
-        authorize_user(response, user_id):
+        authorize_user(response, user_id): """

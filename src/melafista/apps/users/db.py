@@ -34,15 +34,22 @@ def get_user_by_user_id(user_id):
 def set_session_data(session_id, data):
     data = json.dumps(data)
     query = "INSERT INTO sessions(session_id, data) VALUES (%s, %s);"
-    base_db.execute_in_db(query, session_id, data)
+    base_db.execute(query, session_id, data)
 
 
 def get_session_data(sessionid):
-    return base_db.fetchone("SELECT * FROM sessions WHERE session_id = %s", sessionid)
+
+    raw_data = base_db.fetchone("SELECT * FROM sessions WHERE session_id = %s", sessionid)
+    if raw_data:
+        _, raw_data, _ = raw_data
+        session_data = json.loads(raw_data)
+    else:
+        session_data = None
+    return session_data
 
 
 def del_session(sessionid):
-    base_db.execute_in_db("DELETE FROM sessions WHERE session_id = %s", sessionid)
+    base_db.execute("DELETE FROM sessions WHERE session_id = %s", sessionid)
 
 
 def get_id_and_username_all_users():
