@@ -33,10 +33,10 @@ def user_chat(request, recipient_id, user_id):
         return redirect('/chat/user/{}/'.format(recipient_id))
 
     return render_to_response('chat/user_chat.html', {
-        'recipient_id'    : recipient_id,
-        'user_id'         : user_id,
-        'message_history' : message_history,
-        'user_name'       : user_name,
-        'recipient_name'  : recipient_name
+        'recipient_id': recipient_id,
+        'user_id': user_id,
+        'message_history': message_history,
+        'user_name': user_name,
+        'recipient_name': recipient_name
     })
 
