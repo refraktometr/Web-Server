@@ -10,20 +10,12 @@ def get_cursor():
 
 
 def fetchone(query, *params):
-    cursor = get_cursor()
-    if params:
-        cursor.execute(query, params)
-    else:
-        cursor.execute(query)
+    cursor = execute(query, *params)
     return cursor.fetchone()
 
 
 def fetchall(query, *params):
-    cursor = get_cursor()
-    if params:
-        cursor.execute(query, params)
-    else:
-        cursor.execute(query)
+    cursor = execute(query, *params)
     return cursor.fetchall()
 
 
@@ -33,3 +25,4 @@ def execute(query, *params):
         cursor.execute(query, params)
     else:
         cursor.execute(query)
+    return cursor
