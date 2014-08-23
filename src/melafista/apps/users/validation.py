@@ -1,6 +1,4 @@
-from web_server import db, auth
-from flask import redirect
-
+from apps.users import db as user_db
 
 def validate_username(username):
     errors = []
@@ -11,10 +9,14 @@ def validate_username(username):
     if not errors and len(username) < 3:
         errors.append("Username is too short")
 
-    if not errors and db.get_user_by_username(username):
+    if not errors and len(username) > 64:
+        errors.append("Username is too long")
+
+    if not errors and user_db.get_user_by_username(username):
         errors.append("User already exists")
 
     return errors
+
 
 def validate_password(password):
     errors = []
@@ -26,14 +28,3 @@ def validate_password(password):
         errors.append("Password is to short")
 
     return errors
-
-
-def validate_sessionid(request):
-    req = request.headers
-    for i in req:
-        if i == 'Cookie':
-            sessionid = auth.get_sessionid_from_cookie(request)
-            if db.get_valid_sessionid(sessionid):
-                response = redirect('/chat')
-                return response
-    return request

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+        Hello, user
+        <br/>
+        {% if error %}
+            {{ error }}Error
+        {% endif %} 
+        <br/>
+    <form action="/" method="post">
+        Login
+        <br/>
+        <input type="text" name="username" value="{{ username }}"/>
+          <br/>
+        Password
+        <br/>
+        <input type="text" name="password" />
+        <br/>
+        <input type="submit"/>
+        <br/><br/><br/>
+    </form>
+
+        <a href="/registration/"> Registration</a>
+
+</body>
+</html>

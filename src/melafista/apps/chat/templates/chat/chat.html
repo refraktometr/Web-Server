@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+<body>
+    Hello !!!!
+    <br/>
+
+    {% for user_id, username, number_message in data %}
+        <a href="/chat/user/{{ user_id }}/">  {{ username }} </a>
+        {% if number_message %}
+            ({{ number_message }})
+        {% endif %}
+        <br/>
+        <br/>
+    {% endfor %}
+
+    <br/><br/>
+         <br/>
+
+    {% include "users/includes/logout.html" %}
+
+</body>
+</html>
