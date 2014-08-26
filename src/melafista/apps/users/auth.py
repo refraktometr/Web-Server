@@ -4,17 +4,24 @@ import json
 from apps.users import db as user_db
 from melafista import utils
 
-SESSION_KEY='sessoinid'
+
+SESSION_KEY = 'sessionid'
+SESSION_ID_LEN = 50
+
+
+def _generate_sessionid():
+    return utils.get_random_string(length=SESSION_ID_LEN)
+
 
 def authorize_user(response, user_id):
-    sessionid = str(utils._gen_salt(50))
-    user_db.create_session_data(sessionid, {'user_id' : user_id})
-    utils.set_cookie(response, name=SESSION_KEY, value=sessionid)
+    sessionid = _generate_sessionid()
+    user_db.create_session_data(sessionid, {'user_id': user_id})
+    response.set_cookie(key=SESSION_KEY, value=sessionid, expires='Thu, 01 Jan 2070 00:00:00 GMT')
     return response
 
 
 def get_user_id(request):
-    sessionid = utils.get_cookie_value(request, cookie_key=SESSION_KEY)
+    sessionid = request.COOKIES.get(SESSION_KEY)
 
     if not sessionid:
         return
@@ -26,9 +33,9 @@ def get_user_id(request):
 
 
 def logout_user(request, response):
-    sessionid = utils.get_cookie_value(request, cookie_key=SESSION_KEY)
+    sessionid = request.COOKIES.get(SESSION_KEY)
     user_db.del_session(sessionid)
-    utils.delete_cookie(response, SESSION_KEY)
+    response.delete_cookie(key=SESSION_KEY)
     return response
 
 
