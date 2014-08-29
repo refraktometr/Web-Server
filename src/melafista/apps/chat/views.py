@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from apps.users import auth
 from apps.users import db as user_db
-from apps.chat import db
+from apps.chat import db, models
 
 
 @auth.check_authorization

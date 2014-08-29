@@ -1,4 +1,4 @@
-from apps.chat import db as chat_db
+from apps.chat import db as chat_db, models
 from melafista.test_case import TestCase
 from apps.users.tests import factories
 # run test command string python manage.py test -v 2
@@ -12,10 +12,9 @@ class TestCreateMessage(TestCase):
         chat_db.create_message(user_id, recipient_id, text_message)
 
         fetched_query = chat_db.get_messages(user_id, recipient_id)
-        fetched_user_id, fetched_text_message = fetched_query[0]
 
-        self.assertEqual(text_message, fetched_text_message)
-        self.assertEqual(user_id, fetched_user_id)
+        self.assertEqual(text_message, fetched_query[0].text)
+        self.assertEqual(user_id, fetched_query[0].user_id)
 
 
 class TestGetMessage(TestCase):
@@ -25,11 +24,11 @@ class TestGetMessage(TestCase):
         text_message = 'qwe'
         chat_db.create_message(user_id, recipient_id, text_message)
 
-        fetched_data = chat_db.get_messages(user_id, recipient_id)
-        fetched_data2 = chat_db.get_messages(recipient_id, user_id)
+        messages = chat_db.get_messages(user_id, recipient_id)
+        messages2 = chat_db.get_messages(recipient_id, user_id)
 
-        self.assertEqual([(user_id, text_message)], fetched_data)
-        self.assertEqual([(user_id, text_message)], fetched_data2)
+        self.assertEqual((user_id, text_message), (messages[0].user_id, messages[0].text))
+        self.assertEqual((user_id, text_message), (messages2[0].user_id, messages2[0].text))
 
     def test_get_empty_messages(self):
         user_id = factories.create_user()

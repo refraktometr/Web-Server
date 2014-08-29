@@ -16,7 +16,7 @@ def _generate_sessionid():
 def authorize_user(response, user_id):
     sessionid = _generate_sessionid()
     user_db.create_session_data(sessionid, {'user_id': user_id})
-    response.set_cookie(key=SESSION_KEY, value=sessionid, expires='Thu, 01 Jan 2070 00:00:00 GMT')
+    response.set_cookie(key=SESSION_KEY, value=sessionid, max_age=None)
     return response
 
 

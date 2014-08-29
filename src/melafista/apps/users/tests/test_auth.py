@@ -23,7 +23,7 @@ class TestAuthorizeUser(TestCase):
         response.set_cookie.assert_called_with(
             key=auth.SESSION_KEY,
             value=sessioon_id,
-            expires=utils.DEFAULT_COOKIE_DATE,
+            max_age=None,
         )
 
 
