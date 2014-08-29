@@ -24,8 +24,7 @@ def get_messages(user_id, recipient_id):
     fetched_data = base_db.fetchall(query, user_id, recipient_id, recipient_id, user_id)
     messages = []
     for i in fetched_data:
-        message = models.Message(*i)
-        messages.append(message)
+        messages.append(models.Message(*i))
     return messages
 
 

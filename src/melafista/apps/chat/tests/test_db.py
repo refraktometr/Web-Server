@@ -1,4 +1,4 @@
-from apps.chat import db as chat_db, models
+from apps.chat import db as chat_db
 from melafista.test_case import TestCase
 from apps.users.tests import factories
 # run test command string python manage.py test -v 2
