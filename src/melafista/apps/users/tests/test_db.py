@@ -114,7 +114,7 @@ class TestSetSessionData(TestCase):
         username = 'johndoe'
         password = '123123'
         user_id = user_db.create_user(username, password)
-        session_id = str(utils._gen_salt(50))
+        session_id = str(utils.get_random_string(50))
         data = {'user_id' : user_id}
 
         user_db.create_session_data(session_id, data)
@@ -128,8 +128,8 @@ class TestDelSession(TestCase):
     def test_del_session(self):
         user_id1 = factories.create_user()
         user_id2 = factories.create_user()
-        session_id = str(utils._gen_salt(50))
-        session_id2 = str(utils._gen_salt(50))
+        session_id = str(utils.get_random_string(50))
+        session_id2 = str(utils.get_random_string(50))
         data = {'user_id': user_id1}
         data2 = {'user_id': user_id2}
         user_db.create_session_data(session_id, data)
