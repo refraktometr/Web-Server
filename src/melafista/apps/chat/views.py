@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from apps.users import auth
 from apps.users import db as user_db
-from apps.chat import db, models
+from apps.chat import db
 
 
 @auth.check_authorization
@@ -36,7 +36,7 @@ def user_chat(request, recipient_id, user_id):
         'recipient_id': recipient.id,
         'user_id': user.id,
         'message_history': message_history,
-        'user_name': user.name,
-        'recipient_name': recipient.name
+        'user_name': user.username,
+        'recipient_name': recipient.username
     })
 

@@ -9,11 +9,11 @@ def index(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user_id = user_db.get_valid_user(username, password)
+        user = user_db.get_user(username=username)
 
-        if user_id:
+        if user and user.check_password(password):
             response = redirect('/chat/')
-            auth.authorize_user(response, user_id)
+            auth.authorize_user(response, user.id)
             return response
         else:
             error = True
@@ -43,7 +43,7 @@ def registration(request):
 def confirmation(request, user_id):
     user = user_db.get_user(user_id=user_id)
     return render_to_response('users/confirmation.html', {
-        'user_name' : user.name
+        'user_name' : user.username
     })
 
 

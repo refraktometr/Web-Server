@@ -10,18 +10,6 @@ def create_user(username, password):
     return base_db.fetchone(query, username, password, salt)[0]
 
 
-def get_valid_user(username, password):
-    user = get_user(username=username)
-
-    if not user:
-        return
-
-    if user.password == utils.get_hash(password + user.salt):
-        return user.id
-    else:
-        return
-
-
 def get_user(user_id=None, username=None):
     user = None
     if user_id:

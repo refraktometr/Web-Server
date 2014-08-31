@@ -32,33 +32,24 @@ class TestCreateUser(TestCase):
 
         self.assertEqual(username, fetched_username)
 
-class TestGetValidUser(TestCase):
-    def test_get_valid_user_return_user_id(self):
+class TestUserChekPassword(TestCase):
+    def test_user_check_password(self):
         username = 'johndoe'
         password = '123123'
 
         user_db.create_user(username, password)
-        user_id = user_db.get_valid_user(username, password)
+        user = user_db.get_user(username=username)
 
-        self.assertIsInstance(user_id, int)
+        self.assertEqual(user.check_password(password), True)
 
-    def test_false_get_valid_user_wrong_username(self):
+    def test_false_user_check_password_wrong_password(self):
         username = 'johndoe'
         password = '123123'
 
         user_db.create_user(username, password)
-        user_id = user_db.get_valid_user('False', password)
+        user = user_db.get_user(username=username)
 
-        self.assertEqual(user_id, None)
-
-    def test_false_get_valid_user_wrong_password(self):
-        username = 'johndoe'
-        password = '123123'
-
-        user_db.create_user(username, password)
-        user_id = user_db.get_valid_user(username, 'false')
-
-        self.assertEqual(user_id, None)
+        self.assertEqual(user.check_password("False"), False)
 
 
 class TestGetUserByUsername(TestCase):
@@ -70,7 +61,7 @@ class TestGetUserByUsername(TestCase):
         user = user_db.get_user(username=username)
 
         self.assertIsInstance(user.id, int)
-        self.assertEqual(user.name, username)
+        self.assertEqual(user.username, username)
 
         hash_password, _ = utils.get_hash_with_salt(password, salt=user.salt)
         self.assertEqual(hash_password, user.password)
@@ -97,7 +88,7 @@ class TestGetUserByUserId(TestCase):
 
         self.assertIsInstance(fetched_user.id, int)
         self.assertEqual(user.id, fetched_user.id)
-        self.assertEqual(fetched_user.name, username)
+        self.assertEqual(fetched_user.username, username)
 
         hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_user.salt)
         self.assertEqual(hash_password, fetched_user.password)
