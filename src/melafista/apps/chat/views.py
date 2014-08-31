@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from apps.users import auth
 from apps.users import db as user_db
-from apps.chat import db
+from apps.chat import db, models
 
 
 @auth.check_authorization
@@ -24,8 +24,8 @@ def user_chat(request, recipient_id, user_id):
     recipient_id = int(recipient_id)
     message_history = db.get_messages(user_id, recipient_id)
     db.mark_messages_as_read(user_id, recipient_id)
-    _, user_name, _, _ = user_db.get_user_by_user_id(user_id)
-    _, recipient_name, _, _ = user_db.get_user_by_user_id(recipient_id)
+    user = user_db.get_user(user_id=user_id)
+    recipient = user_db.get_user(user_id=recipient_id)
 
     if request.method == 'POST':
         text_message = request.POST['message']
@@ -33,10 +33,10 @@ def user_chat(request, recipient_id, user_id):
         return redirect('/chat/user/{}/'.format(recipient_id))
 
     return render_to_response('chat/user_chat.html', {
-        'recipient_id': recipient_id,
-        'user_id': user_id,
+        'recipient_id': recipient.id,
+        'user_id': user.id,
         'message_history': message_history,
-        'user_name': user_name,
-        'recipient_name': recipient_name
+        'user_name': user.name,
+        'recipient_name': recipient.name
     })
 

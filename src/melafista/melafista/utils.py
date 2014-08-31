@@ -8,6 +8,7 @@ EXPIRED_DATE = 'Thu, 01 Jan 1970 00:00:00 GMT'
 SALT_LENGTH = 32
 SESSION_KEY = 'sessoinid'
 
+
 def get_random_string(length):
     return ''.join(random.choice(string.hexdigits) for _ in range(length))
 

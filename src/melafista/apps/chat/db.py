@@ -1,5 +1,5 @@
 from melafista import base_db
-
+from apps.chat import models
 
 def create_message(user_id, recipient_id, text_message):
     cursor = base_db.get_cursor()
@@ -9,7 +9,7 @@ def create_message(user_id, recipient_id, text_message):
 
 def get_messages(user_id, recipient_id):
     query = """
-        SELECT user_id, text_message
+        SELECT user_id, recipient_id, text_message
         FROM (
             SELECT *
             FROM users_message
@@ -21,7 +21,11 @@ def get_messages(user_id, recipient_id):
         ) AS a
         ORDER BY create_at
     """
-    return base_db.fetchall(query, user_id, recipient_id, recipient_id, user_id)
+    fetched_data = base_db.fetchall(query, user_id, recipient_id, recipient_id, user_id)
+    messages = []
+    for i in fetched_data:
+        messages.append(models.Message(*i))
+    return messages
 
 
 def get_number_new_messages(recipient_id):

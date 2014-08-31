@@ -16,7 +16,7 @@ def _generate_sessionid():
 def authorize_user(response, user_id):
     sessionid = _generate_sessionid()
     user_db.create_session_data(sessionid, {'user_id': user_id})
-    response.set_cookie(key=SESSION_KEY, value=sessionid, expires='Thu, 01 Jan 2070 00:00:00 GMT')
+    response.set_cookie(key=SESSION_KEY, value=sessionid, max_age=None)
     return response
 
 
@@ -26,10 +26,10 @@ def get_user_id(request):
     if not sessionid:
         return
 
-    session_data = user_db.get_session_data(sessionid)
+    session = user_db.get_session(sessionid)
 
-    if session_data:
-        return session_data.get('user_id')
+    if session:
+        return session.data.get('user_id')
 
 
 def logout_user(request, response):

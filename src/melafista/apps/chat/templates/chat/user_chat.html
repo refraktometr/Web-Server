@@ -5,11 +5,12 @@
 </head>
 <body>
     <br/>
-    {% for id, text in message_history %}
-        {% if id == recipient_id %}
-            {{ recipient_name }}   <pre>      {{ text }} </pre> <br/>
+    <br/>
+    {% for message in message_history %}
+        {% if message.user_id == recipient_id %}
+            {{ recipient_name }}   <pre>      {{ message.text }} </pre> <br/>
         {% else %}
-            {{ user_name }}   <pre>      {{ text }} </pre> <br/>
+            {{ user_name }}   <pre>      {{ message.text }} </pre> <br/>
         {% endif %}
     {% endfor %}
 

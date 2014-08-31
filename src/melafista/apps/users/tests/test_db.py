@@ -67,19 +67,19 @@ class TestGetUserByUsername(TestCase):
         password = '123123'
         user_db.create_user(username, password)
 
-        fetched_id, fetched_username, fetched_password, fetched_salt = user_db.get_user_by_username(username)
+        user = user_db.get_user(username=username)
 
-        self.assertIsInstance(fetched_id, int)
-        self.assertEqual(fetched_username, username)
+        self.assertIsInstance(user.id, int)
+        self.assertEqual(user.name, username)
 
-        hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_salt)
-        self.assertEqual(hash_password, fetched_password)
+        hash_password, _ = utils.get_hash_with_salt(password, salt=user.salt)
+        self.assertEqual(hash_password, user.password)
 
     def test_get_non_existent_username_returns_none(self):
         username = 'johndoe'
         password = '123123'
         user_db.create_user(username, password)
-        fetched_data = user_db.get_user_by_username('qwe')
+        fetched_data = user_db.get_user(username='qwe')
 
         self.assertEqual(fetched_data, None)
 
@@ -90,21 +90,23 @@ class TestGetUserByUserId(TestCase):
         password = '123123'
         user_db.create_user(username, password)
 
-        user_id, _, _, _ = user_db.get_user_by_username(username)
-        fetched_id, fetched_username, fetched_password, fetched_salt = user_db.get_user_by_user_id(user_id)
+        user = user_db.get_user(username=username)
+        print user.id
+        fetched_user = user_db.get_user(user_id=user.id)
+        print fetched_user.id
 
-        self.assertIsInstance(fetched_id, int)
-        self.assertEqual(user_id, fetched_id)
-        self.assertEqual(fetched_username, username)
+        self.assertIsInstance(fetched_user.id, int)
+        self.assertEqual(user.id, fetched_user.id)
+        self.assertEqual(fetched_user.name, username)
 
-        hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_salt)
-        self.assertEqual(hash_password, fetched_password)
+        hash_password, _ = utils.get_hash_with_salt(password, salt=fetched_user.salt)
+        self.assertEqual(hash_password, fetched_user.password)
 
     def test_get_non_existent_user_id_returns_none(self):
         username = 'johndoe'
         password = '123123'
         user_db.create_user(username, password)
-        fetched_data = user_db.get_user_by_user_id(12324)
+        fetched_data = user_db.get_user(user_id=12324)
 
         self.assertEqual(fetched_data, None)
 
@@ -119,9 +121,9 @@ class TestSetSessionData(TestCase):
 
         user_db.create_session_data(session_id, data)
 
-        fetched_data = user_db.get_session_data(session_id)
+        session = user_db.get_session(session_id)
 
-        self.assertEqual(fetched_data, data)
+        self.assertEqual(session.data, data)
 
 
 class TestDelSession(TestCase):
@@ -137,11 +139,11 @@ class TestDelSession(TestCase):
 
         user_db.del_session(session_id)
 
-        deleted_row = user_db.get_session_data(session_id)
-        fetched_data2 = user_db.get_session_data(session_id2)
+        deleted_row = user_db.get_session(session_id)
+        session2 = user_db.get_session(session_id2)
 
         self.assertEqual(deleted_row, None)
-        self.assertEqual(fetched_data2, data2)
+        self.assertEqual(session2.data, data2)
 
 
 class TestGetIdAndUsernameAllUsers(TestCase):

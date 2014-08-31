@@ -2,6 +2,7 @@ import psycopg2
 from apps.users import db
 from melafista import utils
 
+
 def get_cursor(name_database=None):
     query = "host='localhost'  user='postgres' password='postgres'"
     if name_database:

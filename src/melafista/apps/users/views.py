@@ -41,9 +41,9 @@ def registration(request):
 
 
 def confirmation(request, user_id):
-    _, user_name, _, _ = user_db.get_user_by_user_id(user_id)
+    user = user_db.get_user(user_id=user_id)
     return render_to_response('users/confirmation.html', {
-        'user_name' : user_name,
+        'user_name' : user.name
     })
 
 
