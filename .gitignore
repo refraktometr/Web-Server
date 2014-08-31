@@ -2,4 +2,4 @@
 .idea
 *.pyc
 test.py
-try.py
+src/melafista/try.py
