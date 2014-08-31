@@ -26,10 +26,10 @@ def get_user_id(request):
     if not sessionid:
         return
 
-    session_data = user_db.get_session_data(sessionid)
+    session = user_db.get_session(sessionid)
 
-    if session_data:
-        return session_data.get('user_id')
+    if session:
+        return session.data.get('user_id')
 
 
 def logout_user(request, response):

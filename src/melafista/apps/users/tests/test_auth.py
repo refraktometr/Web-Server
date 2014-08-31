@@ -17,8 +17,8 @@ class TestAuthorizeUser(TestCase):
 
         auth.authorize_user(response, user_id)
 
-        session_data = user_db.get_session_data(sessioon_id)
-        self.assertEqual(session_data, {'user_id': user_id})
+        session = user_db.get_session(sessioon_id)
+        self.assertEqual(session.data, {'user_id': user_id})
 
         response.set_cookie.assert_called_with(
             key=auth.SESSION_KEY,
@@ -77,7 +77,7 @@ class TestLogoutUser(TestCase):
 
         auth.logout_user(request, response)
 
-        session_data = user_db.get_session_data(sessionid)
+        session_data = user_db.get_session(sessionid)
 
         self.assertEqual(session_data, None)
         response.delete_cookie.assert_called_with(

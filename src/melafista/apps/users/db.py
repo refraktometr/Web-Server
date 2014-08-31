@@ -1,5 +1,6 @@
 import json
 from melafista import utils, base_db
+from apps.users import models
 
 
 def create_user(username, password):
@@ -10,25 +11,33 @@ def create_user(username, password):
 
 
 def get_valid_user(username, password):
-    user_information = get_user_by_username(username)
+    user = get_user(username=username)
 
-    if not user_information:
+    if not user:
         return
 
-    user_id, _, user_password, salt = user_information
-    if user_password == utils.get_hash(password + salt):
-        return user_id
+    if user.password == utils.get_hash(password + user.salt):
+        return user.id
     else:
         return
 
 
-def get_user_by_username(username):
-    query = "SELECT * FROM users WHERE username = %s"
-    return base_db.fetchone(query, username)
+def get_user(user_id=None, username=None):
+    user = None
+    if user_id:
+        query = "SELECT * FROM users WHERE id = %s"
+        fetched_data = base_db.fetchone(query, user_id)
+        if fetched_data:
+            user = models.User(*fetched_data)
 
+    if username:
+        query = "SELECT * FROM users WHERE username = %s"
+        fetched_data = base_db.fetchone(query, username)
+        if fetched_data:
+            user = models.User(*fetched_data)
 
-def get_user_by_user_id(user_id):
-    return base_db.fetchone("SELECT * FROM users WHERE id = %s", user_id)
+    return user
+
 
 
 def create_session_data(session_id, data):
@@ -37,15 +46,14 @@ def create_session_data(session_id, data):
     base_db.execute(query, session_id, data)
 
 
-def get_session_data(sessionid):
+def get_session(sessionid):
 
     raw_data = base_db.fetchone("SELECT * FROM sessions WHERE session_id = %s", sessionid)
+
     if raw_data:
-        _, raw_data, _ = raw_data
-        session_data = json.loads(raw_data)
-    else:
-        session_data = None
-    return session_data
+        session = models.Session(*raw_data)
+        return session
+
 
 
 def del_session(sessionid):
