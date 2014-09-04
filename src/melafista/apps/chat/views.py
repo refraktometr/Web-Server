@@ -6,7 +6,7 @@ from apps.chat import models
 @auth.check_authorization
 def chat(request, user_id):
     new_messages_number = models.Message.objects.get_number_new_messages(user_id)
-    users = users_models.User.objects.get_all_users()
+    users = users_models.User.objects.all()
     data = []
     for user in users:
         number_new_messages = new_messages_number.get(user.id)

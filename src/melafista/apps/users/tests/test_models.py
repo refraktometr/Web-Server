@@ -40,14 +40,10 @@ class TestSetSessionData(TestCase):
 
 class TestDelSession(TestCase):
     def test_del_session(self):
-        user = factories.create_user()
-        user2 = factories.create_user()
-        session_id = str(utils.get_random_string(50))
-        session_id2 = str(utils.get_random_string(50))
-        data = {'user_id': user.id}
-        data2 = {'user_id': user2.id}
-        models.Session.objects.create(session_id, data)
-        models.Session.objects.create(session_id2, data2)
+        session_id = '10'
+        session_id2 = '20'
+        models.Session.objects.create(session_id, {'user_id': 1})
+        models.Session.objects.create(session_id2, {'user_id': 2})
 
         models.Session.objects.delete(session_id)
 
@@ -55,7 +51,7 @@ class TestDelSession(TestCase):
         session2 = models.Session.objects.get(session_id2)
 
         self.assertEqual(deleted_row, None)
-        self.assertEqual(session2.data, data2)
+        self.assertEqual(session2.data, {'user_id': 2})
 
 
 class TestCreateUser(TestCase):
@@ -139,7 +135,7 @@ class TestGetIdAndUsernameAllUsers(TestCase):
         user1 = factories.create_user('vasia')
         user2 = factories.create_user('petiya')
 
-        fetched_array = models.User.objects.get_all_users()
+        fetched_array = models.User.objects.all()
 
         self.assertEqual((user1.id, user1.username, user1.password, user1.salt),
                         (fetched_array[0].id, fetched_array[0].username, fetched_array[0].password, fetched_array[0].salt))

@@ -37,9 +37,8 @@ class UserManager(Manager):
         password, salt = utils.get_hash_with_salt(password)
 
         query = "INSERT INTO users(username, password, salt) VALUES (%s, %s, %s) RETURNING id;"
-        base_db.fetchone(query, username, password, salt)
-        user = User.objects.get(username=username)
-        return user
+        user_id = base_db.fetchone(query, username, password, salt)
+        return self.model(user_id[0], username, password, salt)
 
     def get(self, user_id=None, username=None):
         user = None
@@ -57,7 +56,7 @@ class UserManager(Manager):
 
         return user
 
-    def get_all_users(self):
+    def all(self):
         users_data = base_db.fetchall(query="SELECT * FROM users")
         users = []
         for data in users_data:
