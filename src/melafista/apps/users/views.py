@@ -1,6 +1,5 @@
 from django.shortcuts import render_to_response, redirect
-from apps.users import auth, validation
-from apps.users import db as user_db
+from apps.users import auth, validation, models
 
 
 def index(request):
@@ -9,7 +8,7 @@ def index(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = user_db.get_user(username=username)
+        user = models.User.objects.get(username=username)
 
         if user and user.check_password(password):
             response = redirect('/chat/')
@@ -32,8 +31,8 @@ def registration(request):
         errors.extend(validation.validate_password(password))
 
         if not errors:
-            user_id = user_db.create_user(username, password)
-            return redirect('/confirmation/user_id/{}/'.format(user_id))
+            user = models.User.objects.create(username, password)
+            return redirect('/confirmation/user_id/{}/'.format(user.id))
 
     return render_to_response('users/registration.html', {
                 'errors' : errors,
@@ -41,7 +40,7 @@ def registration(request):
 
 
 def confirmation(request, user_id):
-    user = user_db.get_user(user_id=user_id)
+    user = models.User.objects.get(user_id=user_id)
     return render_to_response('users/confirmation.html', {
         'user_name' : user.username
     })

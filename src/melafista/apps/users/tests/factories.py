@@ -1,4 +1,4 @@
-from apps.users import db
+from apps.users import models
 from melafista import utils
 
 
@@ -9,5 +9,5 @@ def create_user(username=None, password=None):
     if not password:
         password = str(utils.get_random_string(30))
 
-    user_id = db.create_user(username, password)
-    return user_id
+    user = models.User.objects.create(username, password)
+    return user

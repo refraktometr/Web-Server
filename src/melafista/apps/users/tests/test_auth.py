@@ -1,8 +1,7 @@
 from django.shortcuts import redirect
 from melafista import utils
 from melafista.test_case import TestCase
-from apps.users import db as user_db
-from apps.users import auth
+from apps.users import models, auth
 import mock
 
 
@@ -17,7 +16,7 @@ class TestAuthorizeUser(TestCase):
 
         auth.authorize_user(response, user_id)
 
-        session = user_db.get_session(sessioon_id)
+        session = models.Session.objects.get(sessioon_id)
         self.assertEqual(session.data, {'user_id': user_id})
 
         response.set_cookie.assert_called_with(
@@ -35,7 +34,7 @@ class TestGetUserId(TestCase):
         request = mock.MagicMock(
             COOKIES={auth.SESSION_KEY: sessionid}
         )
-        user_db.create_session_data(sessionid, {'user_id': user_id})
+        models.Session.objects.create(sessionid, {'user_id': user_id})
 
         auth_user_id = auth.get_user_id(request)
 
@@ -48,7 +47,7 @@ class TestGetUserId(TestCase):
         request = mock.MagicMock(
             COOKIES={}
         )
-        user_db.create_session_data(sessionid, {'user_id': user_id})
+        models.Session.objects.create(sessionid, {'user_id': user_id})
         auth_user_id = auth.get_user_id(request)
 
         self.assertEqual(auth_user_id, None)
@@ -61,7 +60,7 @@ class TestGetUserId(TestCase):
         request = mock.MagicMock(
             COOKIES={auth.SESSION_KEY: sessionid}
         )
-        user_db.create_session_data(sessionid_in_db, {'user_id': user_id})
+        models.Session.objects.create(sessionid_in_db, {'user_id': user_id})
         auth_user_id = auth.get_user_id(request)
 
         self.assertEqual(auth_user_id, None)
@@ -69,17 +68,17 @@ class TestGetUserId(TestCase):
 
 class TestLogoutUser(TestCase):
     def test_logout_user(self):
-        sessionid = '321'
+        session_id = '321'
         user_id = 123
-        request = mock.MagicMock(COOKIES={auth.SESSION_KEY : sessionid})
-        user_db.create_session_data(sessionid, {'user_id': user_id})
+        request = mock.MagicMock(COOKIES={auth.SESSION_KEY : session_id})
+        models.Session.objects.create(session_id, {'user_id': user_id})
         response = mock.MagicMock()
 
         auth.logout_user(request, response)
 
-        session_data = user_db.get_session(sessionid)
+        session = models.Session.objects.get(session_id)
 
-        self.assertEqual(session_data, None)
+        self.assertEqual(session, None)
         response.delete_cookie.assert_called_with(
             key=auth.SESSION_KEY
         )

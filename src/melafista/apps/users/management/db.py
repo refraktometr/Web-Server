@@ -1,5 +1,4 @@
 import psycopg2
-from apps.users import db
 from melafista import utils
 
 

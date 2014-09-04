@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render_to_response
 from functools import wraps
 import json
-from apps.users import db as user_db
+from apps.users import models
 from melafista import utils
 
 
@@ -14,27 +14,27 @@ def _generate_sessionid():
 
 
 def authorize_user(response, user_id):
-    sessionid = _generate_sessionid()
-    user_db.create_session_data(sessionid, {'user_id': user_id})
-    response.set_cookie(key=SESSION_KEY, value=sessionid, max_age=None)
+    session_id = _generate_sessionid()
+    models.Session.objects.create(session_id, {'user_id': user_id})
+    response.set_cookie(key=SESSION_KEY, value=session_id, max_age=None)
     return response
 
 
 def get_user_id(request):
-    sessionid = request.COOKIES.get(SESSION_KEY)
+    session_id = request.COOKIES.get(SESSION_KEY)
 
-    if not sessionid:
+    if not session_id:
         return
 
-    session = user_db.get_session(sessionid)
+    session = models.Session.objects.get(session_id)
 
     if session:
         return session.data.get('user_id')
 
 
 def logout_user(request, response):
-    sessionid = request.COOKIES.get(SESSION_KEY)
-    user_db.del_session(sessionid)
+    session_id = request.COOKIES.get(SESSION_KEY)
+    models.Session.objects.delete(session_id)
     response.delete_cookie(key=SESSION_KEY)
     return response
 
